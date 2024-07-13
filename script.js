@@ -132,19 +132,19 @@ let keysPressed = {};
 const leavesMp3 = new Audio('leaves.mp3');
 leavesMp3.volume = 0.5;
 
+const ikeaTagMaterial = new THREE.MeshBasicMaterial({ map: THREE.ImageUtils.loadTexture('ikea.jpg') });
+//ikea.material = ikeaTagMaterial;
 
 function checkCollision(position, i, j) {
-    const smallerSofa = sofa.clone();
-    //smallerSofa.scale.set(0.1, 0.1, 0.1);
-    const sofaBox = new THREE.Box3().setFromObject(smallerSofa);
+    const sofaBox = new THREE.Box3().setFromObject(sofa);
     sofaBox.translate(position.clone().sub(sofa.position));
     var collisionCandidates = [];
     const x = Math.round(i + worldSize/2);
     const y = Math.round(j + worldSize/2);
 
     //collisionCandidates.push(trees[x][y]);
-    for (let e = -1; e <= 1; e++) {
-        for (let k = -1; k <= 1; k++) {
+    for (let e = -2; e <= 2; e++) {
+        for (let k = -2; k <= 2; k++) {
             if (x + e >= 0 && x + e < worldSize &&  y + k >= 0 && y + k < worldSize) {
                 collisionCandidates.push(trees[x + e][y + k]);
             }
@@ -156,18 +156,24 @@ function checkCollision(position, i, j) {
     for (let tree of collisionCandidates) {
         if (tree != -1) {
             const treeBox = new THREE.Box3().setFromObject(tree);
-            console.log("tree ", tree);
-            console.log("sofa", sofaBox.getSize(), sofaBox.getCenter());
-            console.log("tree", treeBox.getSize(), treeBox.getCenter());
+            // console.log("tree ", tree);
+            // console.log("sofa", sofaBox.getSize(), sofaBox.getCenter());
+            // console.log("tree", treeBox.getSize(), treeBox.getCenter());
 
-            const sHelper = new THREE.Box3Helper(sofaBox, 0xffff00);
-            scene.add(shelper);
-            const tHelper = new THREE.Box3Helper(treeBox, 0xffff00);
-            scene.add(thelper);
+            sofaBox.expandByScalar(-0.4);
+            treeBox.expandByScalar(-0.5);
+            // const sHelper = new THREE.Box3Helper(sofaBox, 0xffff00);
+            // scene.add(sHelper);
+            // const tHelper = new THREE.Box3Helper(treeBox, 0xffff00);
+            // scene.add(tHelper);
 
 
             if (sofaBox.intersectsBox(treeBox)) {
+                tree.material = ikeaTagMaterial;
                 return true;
+
+                //ikeaTagMaterial = new THREE.MeshBasicMaterial({ map: THREE.ImageUtils.loadTexture('ikea.jpg') });
+                //tree.material.set(ikeaTagMaterial);
             }
         }
     }
@@ -185,8 +191,7 @@ function animate() {
                 sofa.position.copy(newPosition);
                 camera.position.z -= vz * speedMultiplyier;
                 camera.position.x -= vx * speedMultiplyier;
-            }
-
+            } 
         leavesMp3.play();
     }   
     if (keysPressed['ArrowDown']) { 
