@@ -29,7 +29,7 @@ function initGame() {
 
 
     const ikeaGeometry = new THREE.BoxGeometry(100,30,100);
-    const ikeaMaterial = new THREE.MeshStandardMaterial({color: 0x0000ff });
+    const ikeaMaterial = new THREE.MeshStandardMaterial({color: 0xff0000 });
     const ikea = new THREE.Mesh(ikeaGeometry, ikeaMaterial);
     ikea.position.z = 250;
     scene.add(ikea);
