@@ -3,19 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Third-Person Game</title>
-    <style>
-        body { margin: 0;
-            overflow: hidden;
-            /* CSS gradient background */
-            background: linear-gradient(180deg, #ffffff, #0033ff)
-        }
-        canvas { display: block; }
-    </style>
+    <title>ISR</title>
+    <link rel="stylesheet" href="style.css">
     <script type="importmap">{
 </script>
 </head>
 <body>
+    <div id="loading-screen">
+        <div id="loading-content">
+            <img src="images/loading.jpg" alt="Loading Image" id="loading-image">
+            <div id="loading-text">
+                <p>Loading, please wait...</p>
+            </div>
+            <div id="loading-bar-container">
+                <div id="loading-bar"></div>
+            </div> 
+            <button id="start-button" style="display: none;">Start Game</button>
+        </div>
+    </div>
+    <div id="game-container">
+        <!-- Game canvas will be rendered here -->
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script type="module" src="script.js"></script>
 </body>
