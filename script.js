@@ -29,7 +29,7 @@ function initGame() {
 
 
     const ikeaGeometry = new THREE.BoxGeometry(100,30,100);
-    const ikeaMaterial = new THREE.MeshStandardMaterial({color: 0xff0000 });
+    const ikeaMaterial = new THREE.MeshStandardMaterial({color: 0x0000ff });
     const ikea = new THREE.Mesh(ikeaGeometry, ikeaMaterial);
     ikea.position.z = 250;
     scene.add(ikea);
@@ -338,7 +338,7 @@ function initGame() {
             if (deltaX > 0) {
                 keysPressed['ArrowLeft'] = true;
             } else {
-                keysPressed['Arrowleft'] = false;
+                keysPressed['ArrowLeft'] = false;
             }
 
             // Other swipe directions can be handled similarly
