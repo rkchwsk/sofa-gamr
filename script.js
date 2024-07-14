@@ -83,11 +83,19 @@ for (let i = - worldSize/2; i < worldSize/2; i++) {
 //LIGHTS-------------------------------------------------------------------------------------------
 
 // Add a point light
-const light = new THREE.PointLight(0xefefef, 1, 1000);
+const light = new THREE.PointLight(0xefefef, 1, 0);
 light.position.set(10, 10, 10);
 scene.add(light);
 
-const ambientLight = new THREE.AmbientLight(0xffffff); // soft white light
+// const light = new THREE.PointLight(0xefefef, 2, 0);
+// light.position.set(200, 10, 200);
+// scene.add(light);
+
+const hLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+scene.add( hLight );
+
+
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.2); // soft white light
 scene.add(ambientLight);
 //-------------------------------------------------------------------------------------------
 
