@@ -56,17 +56,26 @@ function addTree(z, x) {
     leaves.position.y = 28;
     scene.add(leaves);
 
-    return trunk;
+    return [trunk, leaves];
 }
 
-var trees = []
+var trees = [];
+var leavesArray = [];
+var leavesList = [];    
+
+
 for (let i = - worldSize/2; i < worldSize/2; i++) {
     trees[i + worldSize/2] = [];
+    leavesArray[i + worldSize/2] = [];
     for (let j = -worldSize/2; j < worldSize/2; j++) {
         if (Math.random() < 0.008 && (i != 0 && j != 0)) {
-            trees[i + worldSize/2][j + worldSize/2] = addTree(i, j);
+            const t = addTree(i, j);
+            trees[i + worldSize/2][j + worldSize/2] = t[0];
+            leavesArray[i + worldSize/2][j + worldSize/2] = t[1];
+            leavesList.push(t[1]);
         } else {
             trees[i + worldSize/2][j + worldSize/2] = -1;
+            leavesArray[i + worldSize/2][j + worldSize/2] = -1;
         }
     } 
 } 
@@ -132,8 +141,19 @@ let keysPressed = {};
 const leavesMp3 = new Audio('leaves.mp3');
 leavesMp3.volume = 0.5;
 
-const ikeaTagMaterial = new THREE.MeshBasicMaterial({ map: THREE.ImageUtils.loadTexture('ikea.jpg') });
+//const ikeaTagMaterial = new THREE.MeshBasicMaterial({ map: THREE.ImageUtils.loadTexture('ikea.jpg') });
 //ikea.material = ikeaTagMaterial;
+
+const ikeaTagTextureLoader = new THREE.TextureLoader();
+const ikeaTagTexture = ikeaTagTextureLoader.load('ikea.jpg', () => {
+    // Set the center of rotation to the center of the texture
+    //ikeaTagTexture.center.set(0.5, 0.5);
+    // Rotate the texture by 45 degrees (in radians)
+    //ikeaTagTexture.rotation = Math.PI / 4;
+});
+
+const ikeaTagMaterial = new THREE.MeshBasicMaterial({ map: ikeaTagTexture });
+
 
 function checkCollision(position, i, j) {
     const sofaBox = new THREE.Box3().setFromObject(sofa);
@@ -168,17 +188,22 @@ function checkCollision(position, i, j) {
             // scene.add(tHelper);
 
 
-            if (sofaBox.intersectsBox(treeBox)) {
-                tree.material = ikeaTagMaterial;
+            if (sofaBox.intersectsBox(treeBox) ) {
+                //console.log(ikeaTagTexture.offset);
+                //ikeaTagTexture.offset.x += 0.2;
+                //tree.material = ikeaTagMaterial;
+                
                 return true;
-
-                //ikeaTagMaterial = new THREE.MeshBasicMaterial({ map: THREE.ImageUtils.loadTexture('ikea.jpg') });
-                //tree.material.set(ikeaTagMaterial);
             }
         }
     }
     return false;
 }
+
+var leavesShiftX = 0;
+var leavesShiftZ = 0;
+var leavesSpeedX = 0.01;
+var leavesSpeedZ = 0.01;
 
 
 function animate() {
@@ -228,6 +253,18 @@ function animate() {
         leavesMp3.pause();
     }
 
+    let l;
+
+    leavesShiftX += leavesSpeedX;
+    leavesShiftZ += leavesSpeedZ;
+    leavesSpeedX -= leavesShiftX / 1500;
+    leavesSpeedZ -= leavesShiftZ / 1500;
+
+    for (l in leavesList) {
+        leavesList[l].position.x += leavesSpeedX + (Math.random() -0.5) / 30;
+        leavesList[l].position.z += leavesSpeedZ + (Math.random() - 0.5) / 30;
+
+    }
 
     renderer.render(scene, camera);
 }
