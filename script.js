@@ -3,7 +3,7 @@ import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 
-const music = new Audio('FSODFflute.mp3')
+const music = new Audio('./supplies/FSODFflute.mp3')
 music.loop = true
 music.play()
 
@@ -115,7 +115,7 @@ function initGame() {
 
     const loaderGLTF = new GLTFLoader();
 
-    loaderGLTF.load( './models/chair/chair.glb', function ( gltf ) {
+    loaderGLTF.load( './supplies/models/chair/chair.glb', function ( gltf ) {
         gltf.scene.scale.set(0.015, 0.015, 0.015);
         sofa = gltf.scene;
         sofa.position.set(0, -1, 0);
@@ -150,14 +150,14 @@ function initGame() {
     let keysPressed = {};   
 
 
-    const leavesMp3 = new Audio('leaves.mp3');
+    const leavesMp3 = new Audio('./supplies/leaves.mp3');
     leavesMp3.volume = 0.5;
 
     //const ikeaTagMaterial = new THREE.MeshBasicMaterial({ map: THREE.ImageUtils.loadTexture('ikea.jpg') });
     //ikea.material = ikeaTagMaterial;
 
     const ikeaTagTextureLoader = new THREE.TextureLoader();
-    const ikeaTagTexture = ikeaTagTextureLoader.load('ikea.jpg', () => {
+    const ikeaTagTexture = ikeaTagTextureLoader.load('./supplies/ikea.jpg', () => {
         // Set the center of rotation to the center of the texture
         //ikeaTagTexture.center.set(0.5, 0.5);
         // Rotate the texture by 45 degrees (in radians)
@@ -282,7 +282,6 @@ function initGame() {
     }
 
 
-    //TOUCH SETUP -----------------------------------------------
 
     document.addEventListener('keydown', (event) => {
             keysPressed[event.code] = true;
@@ -325,6 +324,21 @@ function initGame() {
                 keysPressed['ArrowUp'] = true;
             } else {
                 keysPressed['ArrowUp'] = false;
+            }
+            if (deltaY > 0) {
+                keysPressed['ArrowDown'] = true;
+            } else {
+                keysPressed['ArrowDown'] = false;
+            }
+            if (deltaX < 0) {
+                keysPressed['ArrowRight'] = true;
+            } else {
+                keysPressed['ArrowRight'] = false;
+            }
+            if (deltaX > 0) {
+                keysPressed['ArrowLeft'] = true;
+            } else {
+                keysPressed['Arrowleft'] = false;
             }
 
             // Other swipe directions can be handled similarly
