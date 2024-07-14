@@ -34,46 +34,7 @@ function initGame() {
     ikea.position.z = 250;
     scene.add(ikea);
 
-    //TOUCH SETUP -----------------------------------------------
-
-    let keysPressed = {};
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let touchEndX = 0;
-    let touchEndY = 0;
-    let touchThreshold = 50; // Minimum distance to consider a swipe
-
-    // Touch event listeners
-    document.addEventListener('touchstart', (event) => {
-        touchStartX = event.touches[0].clientX;
-        touchStartY = event.touches[0].clientY;
-    }, false);
-
-    document.addEventListener('touchmove', (event) => {
-        touchEndX = event.touches[0].clientX;
-        touchEndY = event.touches[0].clientY;
-    }, false);
-
-    document.addEventListener('touchend', () => {
-        handleSwipe();
-    }, false);
-
-    function handleSwipe() {
-        const deltaX = touchEndX - touchStartX;
-        const deltaY = touchEndY - touchStartY;
-
-        if (Math.abs(deltaX) > touchThreshold || Math.abs(deltaY) > touchThreshold) {
-            // Swipe up
-            if (deltaY < 0) {
-                keysPressed['ArrowUp'] = true;
-            } else {
-                keysPressed['ArrowUp'] = false;
-            }
-
-            // Other swipe directions can be handled similarly
-            // For simplicity, only handling swipe up
-        }
-    }
+    
 
 
     //TREES -------------------------------------------------------------------------------
@@ -104,7 +65,7 @@ function initGame() {
 
     var trees = [];
     var leavesArray = [];
-    var leavesList = [];    
+    var leavesList   = [];    
 
 
     for (let i = - worldSize/2; i < worldSize/2; i++) {
@@ -320,6 +281,9 @@ function initGame() {
         renderer.render(scene, camera);
     }
 
+
+    //TOUCH SETUP -----------------------------------------------
+
     document.addEventListener('keydown', (event) => {
             keysPressed[event.code] = true;
         });
@@ -328,6 +292,45 @@ function initGame() {
     document.addEventListener('keyup', (event) => {
             keysPressed[event.code] = false;
         });
+
+    //let keysPressed = {};
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+    let touchThreshold = 50; // Minimum distance to consider a swipe
+
+    // Touch event listeners
+    document.addEventListener('touchstart', (event) => {
+        touchStartX = event.touches[0].clientX;
+        touchStartY = event.touches[0].clientY;
+    }, false);
+
+    document.addEventListener('touchmove', (event) => {
+        touchEndX = event.touches[0].clientX;
+        touchEndY = event.touches[0].clientY;
+    }, false);
+
+    document.addEventListener('touchend', () => {
+        handleSwipe();
+    }, false);
+
+    function handleSwipe() {
+        const deltaX = touchEndX - touchStartX;
+        const deltaY = touchEndY - touchStartY;
+
+        if (Math.abs(deltaX) > touchThreshold || Math.abs(deltaY) > touchThreshold) {
+            // Swipe up
+            if (deltaY < 0) {
+                keysPressed['ArrowUp'] = true;
+            } else {
+                keysPressed['ArrowUp'] = false;
+            }
+
+            // Other swipe directions can be handled similarly
+            // For simplicity, only handling swipe up
+        }
+    }
 
 
 
