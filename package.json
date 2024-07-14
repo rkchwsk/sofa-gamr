@@ -1,8 +1,17 @@
 {
+  "name": "sofa-gamr",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "vite build",
+    "deploy": "gh-pages -d dist",
+    "preview": "vite preview"
+  },
   "dependencies": {
     "three": "^0.166.1"
   },
   "devDependencies": {
-    "vite": "^5.3.3"
+    "gh-pages": "^3.2.3",
+    "vite": "^2.9.18"
   }
 }
