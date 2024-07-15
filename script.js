@@ -19,7 +19,7 @@ function initGame() {
 
     const worldSize = 500;
     const planeGeometry = new THREE.PlaneGeometry(worldSize, worldSize);
-    const planeMaterial = new THREE.MeshStandardMaterial({ color: 0x403000 });
+    const planeMaterial = new THREE.MeshStandardMaterial({ color:  0x27221f});
     const plane = new THREE.Mesh(planeGeometry, planeMaterial);
     plane.rotation.x = -Math.PI / 2;
     plane.position.y = -1;
@@ -31,10 +31,7 @@ function initGame() {
     const ikea = new THREE.Mesh(ikeaGeometry, ikeaMaterial);
     ikea.position.z = 250;
     scene.add(ikea);
-
     
-
-
     //TREES -------------------------------------------------------------------------------
 
     //const trees = [];
@@ -43,7 +40,7 @@ function initGame() {
     function addTree(z, x) {
         //const trunkGeometry = new THREE.BoxGeometry(1,30,1);
         const trunkGeometry = new THREE.CylinderGeometry(0.3,1,30,10);
-        const trunkMaterial = new THREE.MeshStandardMaterial({color: 0x190100 });
+        const trunkMaterial = new THREE.MeshStandardMaterial({color: 0x1100800 });//({color: 0x190100 });
         const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
         trunk.position.x = x
         trunk.position.z = z 
@@ -51,7 +48,7 @@ function initGame() {
         scene.add(trunk);
 
         const leavesGeometry = new THREE.BoxGeometry(3,2 + Math.random() * 5,3);
-        const leavesMaterial = new THREE.MeshStandardMaterial({ color: 0x113300 });
+        const leavesMaterial = new THREE.MeshStandardMaterial({ color: 0x091f00 });
         const leaves = new THREE.Mesh(leavesGeometry, leavesMaterial);
         leaves.position.x = x
         leaves.position.z = z 
@@ -85,7 +82,7 @@ function initGame() {
     //LIGHTS-------------------------------------------------------------------------------------------
 
     // Add a point light
-    const light = new THREE.PointLight(0xefefef, 1, 0);
+    const light = new THREE.PointLight(0xefefef, 2, 0);
     light.position.set(10, 10, 10);
     scene.add(light);
 
@@ -93,7 +90,7 @@ function initGame() {
     // light.position.set(200, 10, 200);
     // scene.add(light);
 
-    const hLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+    const hLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 2 );
     scene.add( hLight );
 
 
@@ -121,19 +118,6 @@ function initGame() {
     }, undefined, function ( error ) {
         console.error( error );
     } );
-
-
-    // loader.load(
-    //     'sofa.obj',
-    //     function (obj) {
-    //         sofa = obj;
-    //         sofa.position.set(0, -1, 0);
-    //         scene.add(sofa);
-    //     }
-    // )
-
-
-
 
     const cameraRadius = 5
     const cameraXRotation = 10
@@ -210,10 +194,14 @@ function initGame() {
         return false;
     }
 
+
     var leavesShiftX = 0;
     var leavesShiftZ = 0;
     var leavesSpeedX = 0.01;
     var leavesSpeedZ = 0.01;
+    var localLeavesSpeedX; 
+    var localLeavesSpeedZ; 
+    let l;
 
 
     function animate() {
@@ -263,23 +251,23 @@ function initGame() {
             leavesMp3.pause();
         }
 
-        let l;
+        
 
         leavesShiftX += leavesSpeedX;
         leavesShiftZ += leavesSpeedZ;
-        leavesSpeedX -= leavesShiftX / 1500;
-        leavesSpeedZ -= leavesShiftZ / 1500;
+        leavesSpeedX -= leavesShiftX / 1500;// + (Math.random() -0.5) / 100;
+        leavesSpeedZ -= leavesShiftZ / 1500;// + (Math.random() - 0.5) / 100;
 
         for (l in leavesList) {
-            leavesList[l].position.x += leavesSpeedX + (Math.random() -0.5) / 30;
-            leavesList[l].position.z += leavesSpeedZ + (Math.random() - 0.5) / 30;
+            localLeavesSpeedX = leavesSpeedX + (Math.random() -0.5) / 100;
+            localLeavesSpeedZ = leavesSpeedZ + (Math.random() -0.5) / 100;
+            leavesList[l].position.x += localLeavesSpeedX;// + (Math.random() -0.5) / 30;
+            leavesList[l].position.z += localLeavesSpeedZ;// + (Math.random() -0.5) / 30;
 
         }
 
         renderer.render(scene, camera);
     }
-
-
 
     document.addEventListener('keydown', (event) => {
             keysPressed[event.code] = true;
@@ -295,7 +283,7 @@ function initGame() {
     let touchStartY = 0;
     let touchEndX = 0;
     let touchEndY = 0;
-    let touchThreshold = 50; // Minimum distance to consider a swipe
+    let touchThreshold = 20; // Minimum distance to consider a swipe
 
     // Touch event listeners
     document.addEventListener('touchstart', (event) => {
@@ -348,10 +336,68 @@ function initGame() {
         keysPressed['ArrowLeft'] = false;
     }
 
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
     animate();
 }
 
 function showLoadingScreen() {
+    const loadingBar = document.getElementById('loading-bar');
+    const startButton = document.getElementById('start-button');
+    const loadingImage = document.getElementById('loading-image');
+    const loadingText = document.getElementById('loading-text').querySelector('p');
+
+    const images = [
+        { src: './supplies/images/loading1.jpg', text: 'All of a sudden an old sofa gains consciousness in the calm forest...' },
+        { src: './supplies/images/loading2.jpg', text: 'Use arrows or touchscreen to navigate the forest...' },
+        { src: './supplies/images/loading3.jpg', text: 'We recommend to turn music on...' }
+    ];
+
+    let currentIndex = 0;
+
+    function changeImageAndText() {
+        const { src, text } = images[currentIndex];
+        loadingImage.src = src;
+        loadingText.textContent = text;
+        currentIndex = (currentIndex + 1) % images.length;
+    }
+
+    changeImageAndText();
+    const intervalId = setInterval(changeImageAndText, 3000);
+
+    loadingBar.style.width = '100%';
+    const music = new Audio('./supplies/FSODFflute.mp3');
+    music.loop = true;
+    music.play();
+
+    setTimeout(() => {
+        clearInterval(intervalId);
+        startButton.style.display = 'block';
+    }, 9000); // 3 images * 3 seconds each = 9 seconds
+}
+
+// Start the game when the start button is clicked
+function setupStartButton() {
+    const startButton = document.getElementById('start-button');
+    startButton.addEventListener('click', () => {
+        document.getElementById('loading-screen').style.display = 'none';
+        document.getElementById('game-container').style.display = 'block';
+        initGame();
+    });
+}
+
+// Initialize loading screen and start button setup
+showLoadingScreen();
+setupStartButton();
+
+
+
+
+/*function showLoadingScreen() {
     const loadingBar = document.getElementById('loading-bar');
     const startButton = document.getElementById('start-button');
     loadingBar.style.width = '100%';
@@ -378,3 +424,4 @@ function setupStartButton() {
 // Initialize loading screen and start button setup
 showLoadingScreen();
 setupStartButton();
+*/
