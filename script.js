@@ -31,10 +31,17 @@ function initGame() {
     const ikeaGeometry = new THREE.BoxGeometry(100,30,100);
     const ikeaMaterial = new THREE.MeshStandardMaterial({color: 0x0000ff });
     const ikea = new THREE.Mesh(ikeaGeometry, ikeaMaterial);
+    const ikeaYGeometry = new THREE.BoxGeometry(15,32,15);
+    const ikeaYMaterial = new THREE.MeshStandardMaterial({color: 0xffef00 });
+    const ikeaY = new THREE.Mesh(ikeaYGeometry, ikeaYMaterial);        
+    
     const ikeaDirection = Math.random() * 360;
     ikea.position.x = 250 * Math.cos(ikeaDirection);
     ikea.position.z = 250 * Math.sin(ikeaDirection);
+    ikeaY.position.x = 190 * Math.cos(ikeaDirection);
+    ikeaY.position.z = 190 * Math.sin(ikeaDirection);
     scene.add(ikea);
+    scene.add(ikeaY);
     
     //TREES -------------------------------------------------------------------------------
 
@@ -155,11 +162,12 @@ function initGame() {
 
     var beenToIkea = false;
     const ikeaBox = new THREE.Box3().setFromObject(ikea);
+    const ikeaYBox = new THREE.Box3().setFromObject(ikeaY);
 
     function checkIkeaCollision(position) {
         const sofaBox = new THREE.Box3().setFromObject(sofa);
         sofaBox.translate(position.clone().sub(sofa.position));
-        if (sofaBox.intersectsBox(ikeaBox)) {
+        if (sofaBox.intersectsBox(ikeaBox) || sofaBox.intersectsBox(ikeaYBox)) {
             if (!beenToIkea) {
                 pauseGame();
                 //beenToIkea = true;
@@ -406,7 +414,7 @@ function showLoadingScreen() {
     }
 
     changeImageAndText();
-    const intervalId = setInterval(changeImageAndText, 3000);
+    const intervalId = setInterval(changeImageAndText, 4000);
 
     setTimeout(() => {
         loadingBar.style.width = '100%';
@@ -415,7 +423,7 @@ function showLoadingScreen() {
     setTimeout(() => {
         clearInterval(intervalId);
         startButton.style.display = 'block';
-    }, 9000); // 3 images * 3 seconds each = 9 seconds
+    }, 12000); // 3 images * 3 seconds each = 9 seconds
 }
 
 // Start the game when the start button is clicked
