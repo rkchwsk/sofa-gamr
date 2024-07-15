@@ -28,18 +28,29 @@ function initGame() {
     scene.add(plane);
 
 
+    // const ikeaTextureLoader = new THREE.TextureLoader();
+    // const ikeaTexture = ikeaTextureLoader.load('./supplies/images/ikea.jpg', () => {
+    //     // Set the center of rotation to the center of the texture
+    //     //ikeaTagTexture.center.set(0.5, 0.5);
+    //     // Rotate the texture by 45 degrees (in radians)
+    //     //ikeaTagTexture.rotation = Math.PI / 4;
+    // });
+
+    //const ikeaMaterial = new THREE.MeshBasicMaterial({ map: ikeaTexture });
+
+
     const ikeaGeometry = new THREE.BoxGeometry(100,30,100);
     const ikeaMaterial = new THREE.MeshStandardMaterial({color: 0x0000ff });
     const ikea = new THREE.Mesh(ikeaGeometry, ikeaMaterial);
-    const ikeaYGeometry = new THREE.BoxGeometry(15,32,15);
+    const ikeaYGeometry = new THREE.BoxGeometry(12,16,12);
     const ikeaYMaterial = new THREE.MeshStandardMaterial({color: 0xffef00 });
     const ikeaY = new THREE.Mesh(ikeaYGeometry, ikeaYMaterial);        
     
     const ikeaDirection = Math.random() * 360;
     ikea.position.x = 250 * Math.cos(ikeaDirection);
     ikea.position.z = 250 * Math.sin(ikeaDirection);
-    ikeaY.position.x = 190 * Math.cos(ikeaDirection);
-    ikeaY.position.z = 190 * Math.sin(ikeaDirection);
+    ikeaY.position.x = 200 * Math.cos(ikeaDirection);
+    ikeaY.position.z = 200 * Math.sin(ikeaDirection);
     scene.add(ikea);
     scene.add(ikeaY);
     
@@ -51,7 +62,7 @@ function initGame() {
     function addTree(z, x) {
         //const trunkGeometry = new THREE.BoxGeometry(1,30,1);
         const trunkGeometry = new THREE.CylinderGeometry(0.3,1,30,10);
-        const trunkMaterial = new THREE.MeshStandardMaterial({color: 0x1100800 });//({color: 0x190100 });
+        const trunkMaterial = new THREE.MeshStandardMaterial({color: 0x150a00 });//({color: 0x190100 });
         const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
         trunk.position.x = x
         trunk.position.z = z 
@@ -138,7 +149,7 @@ function initGame() {
 
     var vz = 1
     var vx = 0
-    const speedMultiplyier = 0.25
+    const speedMultiplyier = 0.08
     const rotationSpeed = 0.02
     let keysPressed = {};   
 
