@@ -3,9 +3,7 @@ import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 
-const music = new Audio('./supplies/FSODFflute.mp3')
-music.loop = true
-music.play()
+
 
 function initGame() {
     // Basic Three.js setup
@@ -308,45 +306,47 @@ function initGame() {
     document.addEventListener('touchmove', (event) => {
         touchEndX = event.touches[0].clientX;
         touchEndY = event.touches[0].clientY;
+        handleSwipe();
     }, false);
 
     document.addEventListener('touchend', () => {
-        handleSwipe();
+        handleTouchEnd();
     }, false);
 
     function handleSwipe() {
         const deltaX = touchEndX - touchStartX;
         const deltaY = touchEndY - touchStartY;
-
-        if (Math.abs(deltaX) > touchThreshold || Math.abs(deltaY) > touchThreshold) {
-            // Swipe up
-            if (deltaY < 0) {
+        //if (Math.abs(deltaY) > Math.abs(deltaX)) {
+            if (deltaY < -touchThreshold) {
                 keysPressed['ArrowUp'] = true;
             } else {
                 keysPressed['ArrowUp'] = false;
             }
-            if (deltaY > 0) {
+            if (deltaY > touchThreshold) {
                 keysPressed['ArrowDown'] = true;
             } else {
                 keysPressed['ArrowDown'] = false;
             }
-            if (deltaX < 0) {
+        //} else {
+            if (deltaX > touchThreshold) {
                 keysPressed['ArrowRight'] = true;
             } else {
                 keysPressed['ArrowRight'] = false;
             }
-            if (deltaX > 0) {
+            if (deltaX < -touchThreshold) {
                 keysPressed['ArrowLeft'] = true;
             } else {
                 keysPressed['ArrowLeft'] = false;
             }
-
-            // Other swipe directions can be handled similarly
-            // For simplicity, only handling swipe up
-        }
+        //}
     }
 
-
+    function handleTouchEnd() {
+        keysPressed['ArrowUp'] = false;
+        keysPressed['ArrowDown'] = false;
+        keysPressed['ArrowRight'] = false;
+        keysPressed['ArrowLeft'] = false;
+    }
 
     animate();
 }
@@ -355,6 +355,10 @@ function showLoadingScreen() {
     const loadingBar = document.getElementById('loading-bar');
     const startButton = document.getElementById('start-button');
     loadingBar.style.width = '100%';
+
+    const music = new Audio('./supplies/FSODFflute.mp3')
+    music.loop = true
+    music.play()
 
     setTimeout(() => {
         startButton.style.display = 'block';
