@@ -390,7 +390,21 @@ function setupStartButton() {
     });
 }
 
-// Initialize loading screen and start button setup
+function setupPreloadScreen() {
+    const preloadScreen = document.getElementById('preload-screen');
+
+    function startLoading() {
+        preloadScreen.style.display = 'none';
+        document.getElementById('loading-screen').style.display = 'flex';
+        showLoadingScreen();
+        setupStartButton();
+    }
+
+    window.addEventListener('keydown', startLoading, { once: true });
+    window.addEventListener('touchstart', startLoading, { once: true });
+}
+
+
 showLoadingScreen();
 setupStartButton();
 
