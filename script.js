@@ -6,6 +6,8 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 
 function initGame() {
+    
+
     // Basic Three.js setup
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -29,7 +31,9 @@ function initGame() {
     const ikeaGeometry = new THREE.BoxGeometry(100,30,100);
     const ikeaMaterial = new THREE.MeshStandardMaterial({color: 0x0000ff });
     const ikea = new THREE.Mesh(ikeaGeometry, ikeaMaterial);
-    ikea.position.z = 250;
+    const ikeaDirection = Math.random() * 360;
+    ikea.position.x = 250 * Math.cos(ikeaDirection);
+    ikea.position.z = 250 * Math.sin(ikeaDirection);
     scene.add(ikea);
     
     //TREES -------------------------------------------------------------------------------
@@ -128,7 +132,7 @@ function initGame() {
     var vz = 1
     var vx = 0
     const speedMultiplyier = 0.25
-    const rotationSpeed = 0.05
+    const rotationSpeed = 0.02
     let keysPressed = {};   
 
 
@@ -147,6 +151,23 @@ function initGame() {
     });
 
     const ikeaTagMaterial = new THREE.MeshBasicMaterial({ map: ikeaTagTexture });
+
+
+    var beenToIkea = false;
+    const ikeaBox = new THREE.Box3().setFromObject(ikea);
+
+    function checkIkeaCollision(position) {
+        const sofaBox = new THREE.Box3().setFromObject(sofa);
+        sofaBox.translate(position.clone().sub(sofa.position));
+        if (sofaBox.intersectsBox(ikeaBox)) {
+            if (!beenToIkea) {
+                pauseGame();
+                //beenToIkea = true;
+            }
+            return true;
+        }
+    }
+
 
 
     function checkCollision(position, i, j) {
@@ -186,7 +207,7 @@ function initGame() {
                     //console.log(ikeaTagTexture.offset);
                     //ikeaTagTexture.offset.x += 0.2;
                     //tree.material = ikeaTagMaterial;
-                    
+                    //pauseGame();
                     return true;
                 }
             }
@@ -204,49 +225,66 @@ function initGame() {
     let l;
 
 
+    let isPaused = false;
+
+    function pauseGame() {
+        isPaused = true;
+        document.getElementById('overlay').style.display = 'block';
+    }
+
+    function onContinue() {
+        isPaused = false;
+        document.getElementById('overlay').style.display = 'none';
+    }
+
+    document.getElementById('continueBtn').addEventListener('click', onContinue);
+
     function animate() {
         requestAnimationFrame(animate);
-        if (keysPressed['ArrowUp']) {
-            const newPosition = sofa.position.clone();
-            newPosition.z -= vz * speedMultiplyier;
-            newPosition.x -= vx * speedMultiplyier;
-                if (!checkCollision(newPosition, newPosition.z, newPosition.x)) {
-                    sofa.position.copy(newPosition);
-                    camera.position.z -= vz * speedMultiplyier;
-                    camera.position.x -= vx * speedMultiplyier;
-                } 
-            leavesMp3.play();
-        }   
-        if (keysPressed['ArrowDown']) { 
-            const newPosition = sofa.position.clone();
-            newPosition.z += vz * speedMultiplyier;
-            newPosition.x += vx * speedMultiplyier;
-                if (!checkCollision(newPosition, newPosition.z, newPosition.x)) {
-                    sofa.position.copy(newPosition);
-                    camera.position.z += vz * speedMultiplyier;
-                    camera.position.x += vx * speedMultiplyier;
-                }
-            leavesMp3.play();
+        if (!isPaused) {
+            if (keysPressed['ArrowUp']) {
+                const newPosition = sofa.position.clone();
+                newPosition.z -= vz * speedMultiplyier;
+                newPosition.x -= vx * speedMultiplyier;
+                checkIkeaCollision(newPosition);
+                    if (!checkCollision(newPosition, newPosition.z, newPosition.x) && !checkIkeaCollision(newPosition)) {
+                        sofa.position.copy(newPosition);
+                        camera.position.z -= vz * speedMultiplyier;
+                        camera.position.x -= vx * speedMultiplyier;
+                    } 
+                leavesMp3.play();
+            }   
+            if (keysPressed['ArrowDown']) { 
+                const newPosition = sofa.position.clone();
+                newPosition.z += vz * speedMultiplyier;
+                newPosition.x += vx * speedMultiplyier;
+                checkIkeaCollision(newPosition);
+                    if (!checkCollision(newPosition, newPosition.z, newPosition.x) && !checkIkeaCollision(newPosition)) {
+                        sofa.position.copy(newPosition);
+                        camera.position.z += vz * speedMultiplyier;
+                        camera.position.x += vx * speedMultiplyier;
+                    }
+                leavesMp3.play();
+            }
+            if (keysPressed['ArrowLeft']) {
+                sofa.rotation.y += rotationSpeed;
+                camera.rotation.y += rotationSpeed; 
+                camera.position.z = sofa.position.z + cameraRadius*Math.cos(camera.rotation.y)
+                camera.position.x = sofa.position.x + cameraRadius*Math.sin(camera.rotation.y)
+                vz = Math.cos(sofa.rotation.y)
+                vx = Math.sin(sofa.rotation.y)  
+                leavesMp3.play();
+            }
+            if (keysPressed['ArrowRight']) {
+                sofa.rotation.y -= rotationSpeed;
+                camera.rotation.y -= rotationSpeed;
+                camera.position.z = sofa.position.z + cameraRadius*Math.cos(camera.rotation.y)
+                camera.position.x = sofa.position.x + cameraRadius*Math.sin(camera.rotation.y)
+                vz = Math.cos(sofa.rotation.y)
+                vx = Math.sin(sofa.rotation.y)
+                leavesMp3.play();
+            }
         }
-        if (keysPressed['ArrowLeft']) {
-            sofa.rotation.y += rotationSpeed;
-            camera.rotation.y += rotationSpeed;
-            camera.position.z = sofa.position.z + cameraRadius*Math.cos(camera.rotation.y)
-            camera.position.x = sofa.position.x + cameraRadius*Math.sin(camera.rotation.y)
-            vz = Math.cos(sofa.rotation.y)
-            vx = Math.sin(sofa.rotation.y)  
-            leavesMp3.play();
-        }
-        if (keysPressed['ArrowRight']) {
-            sofa.rotation.y -= rotationSpeed;
-            camera.rotation.y -= rotationSpeed;
-            camera.position.z = sofa.position.z + cameraRadius*Math.cos(camera.rotation.y)
-            camera.position.x = sofa.position.x + cameraRadius*Math.sin(camera.rotation.y)
-            vz = Math.cos(sofa.rotation.y)
-            vx = Math.sin(sofa.rotation.y)
-            leavesMp3.play();
-        }
-
         if (!keysPressed['ArrowUp'] && !keysPressed['ArrowDown'] && !keysPressed['ArrowLeft'] && !keysPressed['ArrowRight']) {
             leavesMp3.pause();
         }
@@ -409,37 +447,3 @@ function setupPreloadScreen() {
 }
 
 setupPreloadScreen();
-// showLoadingScreen();
-// setupStartButton();
-
-
-
-
-/*function showLoadingScreen() {
-    const loadingBar = document.getElementById('loading-bar');
-    const startButton = document.getElementById('start-button');
-    loadingBar.style.width = '100%';
-
-    const music = new Audio('./supplies/FSODFflute.mp3')
-    music.loop = true
-    music.play()
-
-    setTimeout(() => {
-        startButton.style.display = 'block';
-    }, 5000);
-}
-
-// Start the game when the start button is clicked
-function setupStartButton() {
-    const startButton = document.getElementById('start-button');
-    startButton.addEventListener('click', () => {
-        document.getElementById('loading-screen').style.display = 'none';
-        document.getElementById('game-container').style.display = 'block';
-        initGame();
-    });
-}
-
-// Initialize loading screen and start button setup
-showLoadingScreen();
-setupStartButton();
-*/
