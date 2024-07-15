@@ -345,6 +345,7 @@ function initGame() {
     animate();
 }
 
+// Show loading screen for 9 seconds
 function showLoadingScreen() {
     const loadingBar = document.getElementById('loading-bar');
     const startButton = document.getElementById('start-button');
@@ -354,7 +355,7 @@ function showLoadingScreen() {
     const images = [
         { src: './supplies/images/loading1.jpg', text: 'All of a sudden an old sofa gains consciousness in the calm forest...' },
         { src: './supplies/images/loading2.jpg', text: 'Use arrows or touchscreen to navigate the forest...' },
-        { src: './supplies/images/loading3.jpg', text: 'We recommend to turn music on...' }
+        { src: './supplies/images/loading3.jpg', text: 'We recommend to turn the music on...' }
     ];
 
     let currentIndex = 0;
@@ -369,10 +370,9 @@ function showLoadingScreen() {
     changeImageAndText();
     const intervalId = setInterval(changeImageAndText, 3000);
 
-    loadingBar.style.width = '100%';
-    const music = new Audio('./supplies/FSODFflute.mp3');
-    music.loop = true;
-    music.play();
+    setTimeout(() => {
+        loadingBar.style.width = '100%';
+    }, 0); // Trigger the transition
 
     setTimeout(() => {
         clearInterval(intervalId);
@@ -390,11 +390,15 @@ function setupStartButton() {
     });
 }
 
+const music = new Audio('./supplies/FSODFflute.mp3');
+music.loop = true;
+
 function setupPreloadScreen() {
     const preloadScreen = document.getElementById('preload-screen');
 
     function startLoading() {
         preloadScreen.style.display = 'none';
+        music.play();
         document.getElementById('loading-screen').style.display = 'flex';
         showLoadingScreen();
         setupStartButton();
@@ -404,9 +408,9 @@ function setupPreloadScreen() {
     window.addEventListener('touchstart', startLoading, { once: true });
 }
 
-
-showLoadingScreen();
-setupStartButton();
+setupPreloadScreen();
+// showLoadingScreen();
+// setupStartButton();
 
 
 

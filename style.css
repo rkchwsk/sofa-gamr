@@ -45,6 +45,12 @@ body, html {
     text-align: center;
 }
 
+#pac-text {
+    font-size: 20px;
+    margin: 0;
+    text-align: center;
+}
+
 #mp-text {
     font-size: 12px;
     margin: 0;
